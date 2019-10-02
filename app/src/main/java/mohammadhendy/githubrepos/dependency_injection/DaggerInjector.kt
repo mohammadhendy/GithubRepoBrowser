@@ -17,7 +17,7 @@ class DaggerInjector private constructor() {
     }
 
     companion object {
-        val instance: DaggerInjector by lazy { Holder.INSTANCE }
+        private val instance: DaggerInjector by lazy { Holder.INSTANCE }
         @JvmStatic
         fun get(): DaggerInjector = instance
     }

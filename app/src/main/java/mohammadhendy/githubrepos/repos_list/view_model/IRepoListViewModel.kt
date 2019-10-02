@@ -15,8 +15,8 @@ interface IRepoListViewModel {
     val nextRoute: Observable<RepoRoute>
 
     /**
-     * called when a Repo item is clicked to open the detail
-     * @param index of the clicked item in the list
+     * called when a Repo item is clicked to open/refresh the detail
+     * @param repoId of the clicked item in the list
      */
-    fun onRepoItemClicked(index: Int)
+    fun onRepoItemClicked(repoId: Int)
 }

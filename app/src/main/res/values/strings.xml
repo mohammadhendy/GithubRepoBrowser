@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Github Repos</string>
     <string name="title_repo_detail">Repository Details</string>
+    <string name="empty_text_no_data">No Repos!</string>
+    <string name="empty_text_error">Failed to load Repos!</string>
 
     <string translatable="false" name="base_url">https://api.github.com/</string>
+    <string translatable="false" name="organisation">square</string>
 </resources>
