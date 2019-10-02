@@ -1,4 +1,4 @@
-package mohammadhendy.githubrepos
+package mohammadhendy.githubrepos.repos_list.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +13,12 @@ import mohammadhendy.githubrepos.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_repo_list.*
 import kotlinx.android.synthetic.main.item_repo.view.*
 import kotlinx.android.synthetic.main.repo_list.*
+import mohammadhendy.githubrepos.R
+import mohammadhendy.githubrepos.RepoDetailActivity
+import mohammadhendy.githubrepos.RepoDetailFragment
+import mohammadhendy.githubrepos.dependency_injection.DaggerInjector
+import mohammadhendy.githubrepos.repos_list.view_model.IRepoListViewModel
+import javax.inject.Inject
 
 /**
  * An activity representing a list of Repos. This activity
@@ -29,6 +35,8 @@ class RepoListActivity : AppCompatActivity() {
      * device.
      */
     private var twoPane: Boolean = false
+    @Inject
+    lateinit var viewModel: IRepoListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +52,18 @@ class RepoListActivity : AppCompatActivity() {
             // activity should be in two-pane mode.
             twoPane = true
         }
+        DaggerInjector.get().createRepoListComponent(twoPane).inject(this)
 
         setupRecyclerView(repo_list)
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
+        recyclerView.adapter =
+            SimpleItemRecyclerViewAdapter(
+                this,
+                DummyContent.ITEMS,
+                twoPane
+            )
     }
 
     class SimpleItemRecyclerViewAdapter(
