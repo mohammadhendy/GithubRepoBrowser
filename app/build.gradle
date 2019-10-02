@@ -1,0 +1,71 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+apply from: "../versions.gradle"
+
+android {
+    compileSdkVersion project.COMPILE_SDK_VERSION
+    defaultConfig {
+        applicationId "mohammadhendy.githubrepos"
+        minSdkVersion project.MIN_SDK_VERSION
+        targetSdkVersion project.TARGET_SDK_VERSION
+        versionCode 1
+        versionName project.APP_VERSION_NAME
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.KOTLIN_VERSION"
+    implementation "androidx.appcompat:appcompat:$project.APPCOMPAT_VERSION"
+    implementation "com.google.android.material:material:$project.MATERIAL_COMPONENTS_VERSION"
+    implementation "androidx.cardview:cardview:$project.CARDVIEW_VERSION"
+    implementation "androidx.recyclerview:recyclerview:$project.RECYCLERVIEW_VERSION"
+    implementation "androidx.constraintlayout:constraintlayout:$project.CONSTRAINT_LAYOUT_VERSION"
+    implementation "androidx.legacy:legacy-support-v4:$project.LEGACY_SUPPORT_V4_VERSION"
+    implementation "androidx.core:core-ktx:$project.KOTLIN_CORE_KTX_VERSION"
+
+
+    // Dagger
+    kapt "com.google.dagger:dagger-compiler:$project.DAGGER_VERSION"
+    implementation "com.google.dagger:dagger:$project.DAGGER_VERSION"
+
+    //GSON
+    implementation "com.google.code.gson:gson:$project.GSON_VERSION"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$project.RETROFIT_VERSION"
+    implementation "com.squareup.retrofit2:converter-gson:$project.RETROFIT_VERSION"
+
+    // RxJava 2
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$project.RETROFIT_VERSION"
+    implementation "io.reactivex.rxjava2:rxjava:$project.RX_JAVA_2_VERSION"
+    implementation "io.reactivex.rxjava2:rxandroid:$project.RX_ANDROID_2_VERSION"
+    implementation "com.jakewharton.rxrelay2:rxrelay:$project.RX_RELAY_2_VERSION"
+
+    // Junit and Mockito
+    testImplementation "junit:junit:$project.JUNIT_VERSION"
+    testImplementation "org.assertj:assertj-core:$project.ASSERTJ_VERSION"
+    testImplementation "org.mockito:mockito-inline:$project.MOCKITO_CORE_VERSION"
+    testImplementation "com.nhaarman:mockito-kotlin-kt1.1:$project.MOCKITO_KOTLIN_VERSION"
+    //Dagger Compiler
+    androidTestImplementation "com.google.dagger:dagger:$project.DAGGER_VERSION"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$project.DAGGER_VERSION"
+    // Android runner and rules support
+    androidTestImplementation "androidx.test:runner:$project.TEST_RUNNER_VERSION"
+    androidTestImplementation "androidx.test:rules:$project.TEST_RULES_VERSION"
+    // Espresso support
+    androidTestImplementation("androidx.test.espresso:espresso-core:$project.ESPRESSO_CORE_VERSION")
+}
