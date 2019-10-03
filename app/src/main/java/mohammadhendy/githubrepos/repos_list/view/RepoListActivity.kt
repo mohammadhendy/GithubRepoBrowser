@@ -1,5 +1,6 @@
 package mohammadhendy.githubrepos.repos_list.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +13,6 @@ import android.widget.TextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-import mohammadhendy.githubrepos.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_repo_list.*
 import kotlinx.android.synthetic.main.empty_loading_recyclerview.*
 import kotlinx.android.synthetic.main.item_repo.view.*
@@ -23,6 +23,7 @@ import mohammadhendy.githubrepos.RepoDetailFragment
 import mohammadhendy.githubrepos.dependency_injection.DaggerInjector
 import mohammadhendy.githubrepos.repos_list.view_model.IRepoListViewModel
 import mohammadhendy.githubrepos.repos_list.view_model.RepoListState
+import mohammadhendy.githubrepos.repos_list.view_model.RepoRoute
 import mohammadhendy.githubrepos.service.model.BookmarkRepo
 import javax.inject.Inject
 
@@ -79,8 +80,12 @@ class RepoListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
+        val onClickListener = View.OnClickListener {
+            val repo = it.tag as BookmarkRepo
+            viewModel.onRepoItemClicked(repo.repo.id)
+        }
         recyclerView.adapter =
-            RepoListAdapter().apply { repoListAdapter = this }
+            RepoListAdapter(onClickListener).apply { repoListAdapter = this }
     }
 
     private fun bindViewModel() {
@@ -90,6 +95,15 @@ class RepoListActivity : AppCompatActivity() {
                 handleRepoState(it)
             }, {
                 Log.e(LOG_TAG, "Error subscribing to repoListState", it)
+            })
+        )
+
+        disposables.add(viewModel.nextRoute
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                handleNextRoute(it)
+            }, {
+                Log.e(LOG_TAG, "Error subscribing to nextRoute", it)
             })
         )
     }
@@ -120,33 +134,32 @@ class RepoListActivity : AppCompatActivity() {
         loading_progress.visibility = if (showProgress) View.VISIBLE else View.GONE
     }
 
-    class RepoListAdapter :
+    private fun handleNextRoute(repoRoute: RepoRoute) {
+        when(repoRoute) {
+            is RepoRoute.OpenDetails -> {
+                val intent = Intent(this, RepoDetailActivity::class.java).apply {
+                    putExtra(RepoDetailFragment.ARG_ITEM_ID, repoRoute.repoId)
+                }
+                startActivity(intent)
+            }
+            is RepoRoute.RefreshDetails -> {
+                val fragment = RepoDetailFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt(RepoDetailFragment.ARG_ITEM_ID, repoRoute.repoId)
+                    }
+                }
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.item_detail_container, fragment)
+                    .commit()
+            }
+        }
+    }
+
+    class RepoListAdapter(private val onClickListener: View.OnClickListener) :
         RecyclerView.Adapter<RepoListAdapter.ViewHolder>() {
 
         private val repoList = mutableListOf<BookmarkRepo>()
-        private val onClickListener: View.OnClickListener
-
-        init {
-            onClickListener = View.OnClickListener { v ->
-//                val item = v.tag as DummyContent.DummyItem
-//                if (twoPane) {
-//                    val fragment = RepoDetailFragment().apply {
-//                        arguments = Bundle().apply {
-//                            putString(RepoDetailFragment.ARG_ITEM_ID, item.id)
-//                        }
-//                    }
-//                    parentActivity.supportFragmentManager
-//                        .beginTransaction()
-//                        .replace(R.id.item_detail_container, fragment)
-//                        .commit()
-//                } else {
-//                    val intent = Intent(v.context, RepoDetailActivity::class.java).apply {
-//                        putExtra(RepoDetailFragment.ARG_ITEM_ID, item.id)
-//                    }
-//                    v.context.startActivity(intent)
-//                }
-            }
-        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
@@ -155,12 +168,11 @@ class RepoListActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = repoList[position]
-            holder.idView.text = item.repo.name
-            holder.contentView.text = item.repo.description
+            val repo = repoList[position]
+            holder.bindViewHolder(repo)
 
             with(holder.itemView) {
-                tag = item
+                tag = repo
                 setOnClickListener(onClickListener)
             }
         }
@@ -174,8 +186,15 @@ class RepoListActivity : AppCompatActivity() {
         }
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val idView: TextView = view.id_text
-            val contentView: TextView = view.content
+            fun bindViewHolder(repo: BookmarkRepo) {
+                itemView.repo_name_text_view.text = repo.repo.name
+                itemView.stars_count_text_view.text = itemView.resources.getQuantityString(
+                    R.plurals.stars_count,
+                    repo.repo.starsCount,
+                    repo.repo.starsCount
+                )
+                itemView.repo_bookmark_image_view.isSelected = repo.isBookmarked
+            }
         }
     }
 

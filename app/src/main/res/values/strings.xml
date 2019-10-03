@@ -6,4 +6,10 @@
 
     <string translatable="false" name="base_url">https://api.github.com/</string>
     <string translatable="false" name="organisation">square</string>
+    <string name="favourite_icon_description">Favourite Icon</string>
+    <plurals name="stars_count">
+        <item quantity="zero">no stars</item>
+        <item quantity="one">%d star</item>
+        <item quantity="other">%d stars</item>
+    </plurals>
 </resources>
