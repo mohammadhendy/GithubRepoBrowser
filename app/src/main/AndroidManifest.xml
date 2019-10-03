@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RepoDetailActivity"
+            android:name=".repo_details.view.RepoDetailActivity"
             android:label="@string/title_repo_detail"
             android:parentActivityName=".repos_list.view.RepoListActivity"
             android:theme="@style/AppTheme.NoActionBar">

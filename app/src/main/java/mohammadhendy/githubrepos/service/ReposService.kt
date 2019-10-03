@@ -20,11 +20,11 @@ class ReposService(private val githubApi: IGithubApi) : IReposService {
         .subscribeOn(Schedulers.io())
 
     override fun addRepoToBookmarks(repoId: Int): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Completable.complete()
     }
 
     override fun removeRepoFromBookmarks(repoId: Int): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Completable.complete()
     }
 
     private fun mapToBookmarkRepo(repos: List<Repo>) = repos.map {

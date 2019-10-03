@@ -2,18 +2,17 @@ package mohammadhendy.githubrepos.repos_list.view_model
 
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
-import mohammadhendy.githubrepos.service.IReposService
+import mohammadhendy.githubrepos.repository.IReposRepository
 
 class RepoListViewModel(
     private val supportsTwoPane: Boolean,
-    private val organisation: String,
-    private val reposService: IReposService
+    private val reposRepository: IReposRepository
 ) : IRepoListViewModel {
 
     private val nextRouteRelay = PublishRelay.create<RepoRoute>()
 
     override val state: Observable<RepoListState>
-        get() = reposService.loadRepos(organisation)
+        get() = reposRepository.repos
         .map {
             if (it.isNullOrEmpty()) {
                 RepoListState.Empty()

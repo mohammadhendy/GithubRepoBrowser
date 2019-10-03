@@ -1,10 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_detail"
-    style="?android:attr/textAppearanceLarge"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:textIsSelectable="true"
-    tools:context=".RepoDetailFragment" />
+    android:layout_marginTop="@dimen/large_margin"
+    android:layout_marginStart="@dimen/small_margin"
+    android:layout_marginEnd="@dimen/small_margin"
+    tools:context=".repo_details.view.RepoDetailFragment">
+
+    <TextView
+        android:id="@+id/repo_name_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Repo Name"
+        />
+
+    <TextView
+        android:id="@+id/stars_count_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:drawableStart="@drawable/ic_stars_black_24dp"
+        android:drawablePadding="@dimen/small_padding"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="5 stars"
+        />
+
+    <FrameLayout
+        android:id="@+id/repo_bookmark_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_margin"
+        android:layout_marginBottom="@dimen/large_margin"
+        app:layout_constraintTop_toBottomOf="@id/repo_name_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ProgressBar
+            android:id="@+id/loading_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/repo_bookmark_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/add_bookmark"
+            android:layout_marginStart="@dimen/large_margin"
+            android:layout_marginEnd="@dimen/large_margin"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:drawableStart="@drawable/ic_favorite_selector"
+            android:drawablePadding="@dimen/medium_padding"
+            android:gravity="start|center_vertical"
+            />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/repo_description_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/large_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repo_bookmark_layout"
+        tools:text="Repo Description"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,11 @@
-package mohammadhendy.githubrepos
+package mohammadhendy.githubrepos.repo_details.view
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_repo_detail.*
+import mohammadhendy.githubrepos.R
 import mohammadhendy.githubrepos.repos_list.view.RepoListActivity
 
 /**
@@ -37,9 +38,9 @@ class RepoDetailActivity : AppCompatActivity() {
             // using a fragment transaction.
             val fragment = RepoDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putString(
+                    putInt(
                         RepoDetailFragment.ARG_ITEM_ID,
-                        intent.getStringExtra(RepoDetailFragment.ARG_ITEM_ID)
+                        intent.getIntExtra(RepoDetailFragment.ARG_ITEM_ID, 0)
                     )
                 }
             }

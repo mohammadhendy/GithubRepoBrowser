@@ -1,6 +1,5 @@
 package mohammadhendy.githubrepos.repos_list.view
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -18,8 +16,8 @@ import kotlinx.android.synthetic.main.empty_loading_recyclerview.*
 import kotlinx.android.synthetic.main.item_repo.view.*
 import kotlinx.android.synthetic.main.repo_list.*
 import mohammadhendy.githubrepos.R
-import mohammadhendy.githubrepos.RepoDetailActivity
-import mohammadhendy.githubrepos.RepoDetailFragment
+import mohammadhendy.githubrepos.repo_details.view.RepoDetailActivity
+import mohammadhendy.githubrepos.repo_details.view.RepoDetailFragment
 import mohammadhendy.githubrepos.dependency_injection.DaggerInjector
 import mohammadhendy.githubrepos.repos_list.view_model.IRepoListViewModel
 import mohammadhendy.githubrepos.repos_list.view_model.RepoListState
