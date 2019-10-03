@@ -6,13 +6,14 @@ import mohammadhendy.githubrepos.service.IReposService
 
 class RepoListViewModel(
     private val supportsTwoPane: Boolean,
-    organisation: String,
-    reposService: IReposService
+    private val organisation: String,
+    private val reposService: IReposService
 ) : IRepoListViewModel {
 
     private val nextRouteRelay = PublishRelay.create<RepoRoute>()
 
-    override val state: Observable<RepoListState> = reposService.loadRepos(organisation)
+    override val state: Observable<RepoListState>
+        get() = reposService.loadRepos(organisation)
         .map {
             if (it.isNullOrEmpty()) {
                 RepoListState.Empty()
