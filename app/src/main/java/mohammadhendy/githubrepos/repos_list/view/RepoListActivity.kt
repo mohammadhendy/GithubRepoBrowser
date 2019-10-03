@@ -104,6 +104,15 @@ class RepoListActivity : AppCompatActivity() {
                 Log.e(LOG_TAG, "Error subscribing to nextRoute", it)
             })
         )
+
+        disposables.add(viewModel.repoChanged
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                repoListAdapter.reloadItem(it)
+            }, {
+                Log.e(LOG_TAG, "Error subscribing to repoChanged", it)
+            })
+        )
     }
 
     private fun handleRepoState(repoListState: RepoListState) {
@@ -181,6 +190,10 @@ class RepoListActivity : AppCompatActivity() {
             repoList.clear()
             repoList.addAll(newList)
             notifyDataSetChanged()
+        }
+
+        fun reloadItem(item: BookmarkRepo) {
+            repoList.indexOf(item)?.let { notifyItemChanged(it) }
         }
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

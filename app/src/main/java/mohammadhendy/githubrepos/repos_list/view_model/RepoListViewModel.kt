@@ -3,6 +3,7 @@ package mohammadhendy.githubrepos.repos_list.view_model
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import mohammadhendy.githubrepos.repository.IReposRepository
+import mohammadhendy.githubrepos.service.model.BookmarkRepo
 
 class RepoListViewModel(
     private val supportsTwoPane: Boolean,
@@ -28,6 +29,8 @@ class RepoListViewModel(
         .distinctUntilChanged()
 
     override val nextRoute: Observable<RepoRoute> = nextRouteRelay.hide()
+
+    override val repoChanged: Observable<BookmarkRepo> = reposRepository.bookmarkChanges
 
     override fun onRepoItemClicked(repoId: Int) {
         if (supportsTwoPane) {

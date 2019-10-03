@@ -29,7 +29,7 @@ class ReposRepository(
     get() = reposRelay.map { it.values.toList() }
 
     override val bookmarkChanges: Observable<BookmarkRepo>
-        get() = bookmarkChanges
+        get() = bookmarkChangeRelay.hide()
 
     override fun addRepoToBookmarks(repoId: Int): Completable =
         reposService

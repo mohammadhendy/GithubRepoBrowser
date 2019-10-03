@@ -1,6 +1,7 @@
 package mohammadhendy.githubrepos.repos_list.view_model
 
 import io.reactivex.Observable
+import mohammadhendy.githubrepos.service.model.BookmarkRepo
 
 interface IRepoListViewModel {
 
@@ -13,6 +14,11 @@ interface IRepoListViewModel {
      * subscribe to route changes, emits [Observable] of [RepoRoute]
      */
     val nextRoute: Observable<RepoRoute>
+
+    /**
+     * subscribe to repo changes, emits [Observable] of repo id [BookmarkRepo]
+     */
+    val repoChanged: Observable<BookmarkRepo>
 
     /**
      * called when a Repo item is clicked to open/refresh the detail
