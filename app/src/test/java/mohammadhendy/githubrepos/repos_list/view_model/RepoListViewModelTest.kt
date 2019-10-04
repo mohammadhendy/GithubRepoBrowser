@@ -3,23 +3,19 @@ package mohammadhendy.githubrepos.repos_list.view_model
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
 import mohammadhendy.githubrepos.TestRules
-import mohammadhendy.githubrepos.api.IGithubApi
-import mohammadhendy.githubrepos.service.IReposService
+import mohammadhendy.githubrepos.repository.IReposRepository
 import mohammadhendy.githubrepos.service.MockUtils
 import org.junit.Before
 import org.junit.Test
 
-import org.junit.Assert.*
 import org.junit.Rule
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import kotlin.reflect.jvm.internal.impl.resolve.scopes.MemberScope
 
 class RepoListViewModelTest {
 
-    private val organisation = "square"
     @Rule @JvmField val replaceSchedulers = TestRules.ReplaceSchedulers()
-    @Mock lateinit var reposService: IReposService
+    @Mock lateinit var repository: IReposRepository
 
     private lateinit var repoListViewModel: IRepoListViewModel
 
@@ -31,7 +27,7 @@ class RepoListViewModelTest {
 
     @Test
     fun getState_FirstIsLoadingState() {
-        whenever(reposService.loadRepos(organisation)).thenReturn(Observable.just(emptyList()))
+        whenever(repository.repos).thenReturn(Observable.just(emptyList()))
         val testObserver = repoListViewModel.state.test()
         testObserver.assertNoErrors()
         testObserver.assertValueAt(0, RepoListState.Loading)
@@ -39,7 +35,7 @@ class RepoListViewModelTest {
 
     @Test
     fun getState_Failed_ReturnEmptyWithError() {
-        whenever(reposService.loadRepos(organisation)).thenReturn(Observable.error(Throwable()))
+        whenever(repository.repos).thenReturn(Observable.error(Throwable()))
         val testObserver = repoListViewModel.state.test()
         testObserver.assertNoErrors()
         testObserver.assertValueAt(0, RepoListState.Loading)
@@ -50,7 +46,7 @@ class RepoListViewModelTest {
 
     @Test
     fun getState_NoRepos_ReturnEmptyState() {
-        whenever(reposService.loadRepos(organisation)).thenReturn(Observable.just(emptyList()))
+        whenever(repository.repos).thenReturn(Observable.just(emptyList()))
         val testObserver = repoListViewModel.state.test()
         testObserver.assertNoErrors()
         testObserver.assertValueAt(0, RepoListState.Loading)
@@ -62,7 +58,7 @@ class RepoListViewModelTest {
     @Test
     fun getState_Success_ReturnDataState() {
         val mockUtils = MockUtils()
-        whenever(reposService.loadRepos(organisation)).thenReturn(Observable.just(mockUtils.mockBookmarkRepos()))
+        whenever(repository.repos).thenReturn(Observable.just(mockUtils.mockBookmarkRepos()))
         val testObserver = repoListViewModel.state.test()
         testObserver.assertNoErrors()
         testObserver.assertValueAt(0, RepoListState.Loading)
@@ -75,7 +71,7 @@ class RepoListViewModelTest {
     fun getState_SuccessAndSupportsTwoPane_NextRouteIsRefreshDetails() {
         repoListViewModel = createViewModel(supportsTwoPane = true)
         val mockUtils = MockUtils()
-        whenever(reposService.loadRepos(organisation)).thenReturn(Observable.just(mockUtils.mockBookmarkRepos()))
+        whenever(repository.repos).thenReturn(Observable.just(mockUtils.mockBookmarkRepos()))
         val testObserver = repoListViewModel.nextRoute.test()
         repoListViewModel.state.test()
         testObserver.assertNoErrors()
@@ -107,7 +103,6 @@ class RepoListViewModelTest {
 
     private fun createViewModel(supportsTwoPane: Boolean = false) = RepoListViewModel(
         supportsTwoPane = supportsTwoPane,
-        organisation = organisation,
-        reposService = reposService
+        reposRepository = repository
     )
 }

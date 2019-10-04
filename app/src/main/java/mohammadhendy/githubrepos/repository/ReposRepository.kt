@@ -18,18 +18,24 @@ class ReposRepository(
 
     var disposable: Disposable? = null
 
-    private val reposRelay by lazy {
-        reloadRepos()
-        BehaviorRelay.create<Map<Int, BookmarkRepo>>()
-    }
-
+    private val reposRelay = BehaviorRelay.create<ReposResult>()
     private val bookmarkChangeRelay by lazy { PublishRelay.create<BookmarkRepo>() }
 
     override val repos: Observable<List<BookmarkRepo>>
-    get() = reposRelay.map { it.values.toList() }
+        get() = reposRelay
+        .map {
+            when(it) {
+                is ReposResult.Success -> it.reposMap.values.toList()
+                is ReposResult.Failure -> throw(it.error)
+            }
+        }
+        .doOnSubscribe {
+            if (!reposRelay.hasValue() || reposRelay.value is ReposResult.Failure) {
+                reloadRepos()
+            }
+        }
 
-    override val bookmarkChanges: Observable<BookmarkRepo>
-        get() = bookmarkChangeRelay.hide()
+    override val bookmarkChanges: Observable<BookmarkRepo> = bookmarkChangeRelay
 
     override fun addRepoToBookmarks(repoId: Int): Completable =
         reposService
@@ -51,7 +57,13 @@ class ReposRepository(
                 }
             }
 
-    override fun getRepo(repoId: Int): BookmarkRepo? = reposRelay.value?.let { it[repoId] }
+    override fun getRepo(repoId: Int): BookmarkRepo? = reposRelay.value?.let {
+        if (it is ReposResult.Success) {
+            it.reposMap[repoId]
+        } else {
+            null
+        }
+    }
 
     override fun reloadRepos() {
         disposable?.dispose()
@@ -60,8 +72,9 @@ class ReposRepository(
                 reposList.associateBy({ it.repo.id }, { it })
             }
             .subscribe({
-                reposRelay.accept(it)
+                reposRelay.accept(ReposResult.Success(it))
             }, {
+                reposRelay.accept(ReposResult.Failure(it))
                 Log.e(LOG_TAG, "error subscribing to loadRepos", it)
             })
     }
