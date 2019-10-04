@@ -23,6 +23,7 @@ project.ext {
     ESPRESSO_CORE_VERSION = "3.1.1"
     TEST_RUNNER_VERSION = "1.1.1"
     TEST_RULES_VERSION = "1.1.1"
+    ROOM_VERSION = "2.2.0-rc01"
 
     // Third party libraries
     DAGGER_VERSION = "2.11"

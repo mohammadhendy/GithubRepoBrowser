@@ -25,4 +25,9 @@ interface IRepoListViewModel {
      * @param repoId of the clicked item in the list
      */
     fun onRepoItemClicked(repoId: Int)
+
+    /**
+     * called to reload the repos list
+     */
+    fun onRefresh()
 }

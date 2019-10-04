@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_repo_detail.*
 import mohammadhendy.githubrepos.R
@@ -69,6 +70,7 @@ class RepoDetailFragment : Fragment() {
         }
 
         disposables.add(repoDetailsViewModel.bookmarkState
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 handleBookmarkState(it)
             }, {

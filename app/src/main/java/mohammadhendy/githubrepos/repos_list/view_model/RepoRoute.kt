@@ -9,4 +9,8 @@ sealed class RepoRoute {
      * Used to refresh the details fragment when twoPane mode is supported
      */
     data class RefreshDetails(val repoId: Int) : RepoRoute()
+    /**
+     * Used to hide the details fragment when twoPane mode is supported
+     */
+    object HideDetails : RepoRoute()
 }

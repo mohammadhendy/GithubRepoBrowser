@@ -60,6 +60,7 @@ class RepoListActivity : AppCompatActivity() {
         DaggerInjector.get().createRepoListComponent(twoPane).inject(this)
 
         setupRecyclerView(repo_list)
+        swipeRefreshLayout.setOnRefreshListener { viewModel.onRefresh() }
     }
 
     override fun onStart() {
@@ -139,6 +140,7 @@ class RepoListActivity : AppCompatActivity() {
         repo_list.visibility = if (showRecycler) View.VISIBLE else View.GONE
         empty_text_view.visibility = if (showEmpty) View.VISIBLE else View.GONE
         loading_progress.visibility = if (showProgress) View.VISIBLE else View.GONE
+        swipeRefreshLayout.isRefreshing = showProgress
     }
 
     private fun handleNextRoute(repoRoute: RepoRoute) {
@@ -159,6 +161,14 @@ class RepoListActivity : AppCompatActivity() {
                     .beginTransaction()
                     .replace(R.id.item_detail_container, fragment)
                     .commit()
+            }
+            RepoRoute.HideDetails -> {
+                supportFragmentManager.findFragmentById(R.id.item_detail_container)?.apply {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .remove(this)
+                        .commit()
+                }
             }
         }
     }

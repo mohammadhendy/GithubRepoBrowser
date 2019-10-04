@@ -21,14 +21,8 @@ class ReposRepository(
     private val reposRelay = BehaviorRelay.create<ReposResult>()
     private val bookmarkChangeRelay by lazy { PublishRelay.create<BookmarkRepo>() }
 
-    override val repos: Observable<List<BookmarkRepo>>
+    override val repos: Observable<ReposResult>
         get() = reposRelay
-        .map {
-            when(it) {
-                is ReposResult.Success -> it.reposMap.values.toList()
-                is ReposResult.Failure -> throw(it.error)
-            }
-        }
         .doOnSubscribe {
             if (!reposRelay.hasValue() || reposRelay.value is ReposResult.Failure) {
                 reloadRepos()

@@ -7,10 +7,10 @@ import mohammadhendy.githubrepos.service.model.BookmarkRepo
 interface IReposRepository {
 
     /**
-     * subscribe to this to get list of repos
-     * @return [Observable] of [BookmarkRepo]'s [List]
+     * subscribe to this to get list of repos or error
+     * @return [Observable] of [ReposResult]
      */
-    val repos: Observable<List<BookmarkRepo>>
+    val repos: Observable<ReposResult>
 
     /**
      * Subscribe to this to get notified with changes in Repos one by one

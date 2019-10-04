@@ -36,7 +36,9 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$project.CONSTRAINT_LAYOUT_VERSION"
     implementation "androidx.legacy:legacy-support-v4:$project.LEGACY_SUPPORT_V4_VERSION"
     implementation "androidx.core:core-ktx:$project.KOTLIN_CORE_KTX_VERSION"
-
+    implementation "androidx.room:room-runtime:$project.ROOM_VERSION"
+    kapt "androidx.room:room-compiler:$project.ROOM_VERSION"
+    implementation "androidx.room:room-rxjava2:$project.ROOM_VERSION"
 
     // Dagger
     kapt "com.google.dagger:dagger-compiler:$project.DAGGER_VERSION"
@@ -61,6 +63,7 @@ dependencies {
     testImplementation "org.assertj:assertj-core:$project.ASSERTJ_VERSION"
     testImplementation "org.mockito:mockito-inline:$project.MOCKITO_CORE_VERSION"
     testImplementation "com.nhaarman:mockito-kotlin-kt1.1:$project.MOCKITO_KOTLIN_VERSION"
+    testImplementation "androidx.room:room-testing:$project.ROOM_VERSION"
     //Dagger Compiler
     androidTestImplementation "com.google.dagger:dagger:$project.DAGGER_VERSION"
     kaptAndroidTest "com.google.dagger:dagger-compiler:$project.DAGGER_VERSION"
