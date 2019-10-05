@@ -16,9 +16,15 @@ interface IRepoListViewModel {
     val nextRoute: Observable<RepoRoute>
 
     /**
-     * subscribe to repo changes, emits [Observable] of repo id [BookmarkRepo]
+     * subscribe to repo changes, emits [Observable] of repo [BookmarkRepo]
      */
     val repoChanged: Observable<BookmarkRepo>
+
+    /**
+     * subscribe to selected Repo Id, emits [Observable] of repo id [Int]
+     * Works only in TwoPane mode
+     */
+    val selectedRepoId: Observable<Int>
 
     /**
      * called when a Repo item is clicked to open/refresh the detail

@@ -86,12 +86,14 @@ class RepoDetailFragment : Fragment() {
                 repo_bookmark_button.isSelected = true
                 repo_bookmark_button.isEnabled = true
                 loading_progress.visibility = View.GONE
+                repo_bookmark_image_view.visibility = View.VISIBLE
             }
             BookmarkState.Removed -> {
                 repo_bookmark_button.text = getString(R.string.add_bookmark)
                 repo_bookmark_button.isSelected = false
                 repo_bookmark_button.isEnabled = true
                 loading_progress.visibility = View.GONE
+                repo_bookmark_image_view.visibility = View.INVISIBLE
             }
             is BookmarkState.Loading -> {
                 repo_bookmark_button.isEnabled = false

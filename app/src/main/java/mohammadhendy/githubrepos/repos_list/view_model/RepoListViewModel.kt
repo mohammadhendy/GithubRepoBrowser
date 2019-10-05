@@ -1,5 +1,6 @@
 package mohammadhendy.githubrepos.repos_list.view_model
 
+import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import mohammadhendy.githubrepos.repository.IReposRepository
@@ -12,6 +13,7 @@ class RepoListViewModel(
 ) : IRepoListViewModel {
 
     private val nextRouteRelay = PublishRelay.create<RepoRoute>()
+    private val selectedRepoIdRelay = BehaviorRelay.create<Int>()
 
     override val state: Observable<RepoListState>
         get() = reposRepository.repos
@@ -23,6 +25,7 @@ class RepoListViewModel(
                     } else {
                         val reposList = result.reposMap.values.toList()
                         if (supportsTwoPane) {
+                            selectedRepoIdRelay.accept(reposList[0].repo.id)
                             nextRouteRelay.accept(RepoRoute.RefreshDetails(reposList[0].repo.id))
                         }
                         RepoListState.Data(reposList)
@@ -39,9 +42,15 @@ class RepoListViewModel(
 
     override val repoChanged: Observable<BookmarkRepo> = reposRepository.bookmarkChanges
 
+    override val selectedRepoId: Observable<Int> = selectedRepoIdRelay.hide().distinctUntilChanged()
+
     override fun onRepoItemClicked(repoId: Int) {
         if (supportsTwoPane) {
-            nextRouteRelay.accept(RepoRoute.RefreshDetails(repoId))
+            if (repoId != selectedRepoIdRelay.value) {
+                selectedRepoIdRelay.accept(repoId)
+                nextRouteRelay.accept(RepoRoute.RefreshDetails(repoId))
+            }
+
         } else {
             nextRouteRelay.accept(RepoRoute.OpenDetails(repoId))
         }

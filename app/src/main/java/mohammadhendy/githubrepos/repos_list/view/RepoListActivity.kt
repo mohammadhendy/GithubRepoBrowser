@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -114,6 +115,15 @@ class RepoListActivity : AppCompatActivity() {
                 Log.e(LOG_TAG, "Error subscribing to repoChanged", it)
             })
         )
+
+        disposables.add(viewModel.selectedRepoId
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                repoListAdapter.updateSelectedItem(it)
+            }, {
+                Log.e(LOG_TAG, "Error subscribing to selectedRepoId", it)
+            })
+        )
     }
 
     private fun handleRepoState(repoListState: RepoListState) {
@@ -177,6 +187,7 @@ class RepoListActivity : AppCompatActivity() {
         RecyclerView.Adapter<RepoListAdapter.ViewHolder>() {
 
         private val repoList = mutableListOf<BookmarkRepo>()
+        private var selectedPosition: Int? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
@@ -189,6 +200,10 @@ class RepoListActivity : AppCompatActivity() {
             holder.bindViewHolder(repo)
 
             with(holder.itemView) {
+                selectedPosition?.let {
+                    val color = if (it == position) R.color.cardSelectedColor else R.color.cardColor
+                    setBackgroundColor(ResourcesCompat.getColor(resources, color, null))
+                }
                 tag = repo
                 setOnClickListener(onClickListener)
             }
@@ -206,6 +221,23 @@ class RepoListActivity : AppCompatActivity() {
             repoList.indexOf(item)?.let { notifyItemChanged(it) }
         }
 
+        fun updateSelectedItem(repoId: Int) {
+            if (selectedPosition == null) {
+                selectedPosition = 0
+                notifyItemChanged(0)
+            } else {
+                repoList.indexOfFirst {
+                    it.repo.id == repoId
+                }?.let { position ->
+                    if (selectedPosition != position) {
+                        selectedPosition?.let { notifyItemChanged(it) }
+                        selectedPosition = position
+                        notifyItemChanged(position)
+                    }
+                }
+            }
+        }
+
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             fun bindViewHolder(repo: BookmarkRepo) {
                 itemView.repo_name_text_view.text = repo.repo.name
@@ -214,7 +246,8 @@ class RepoListActivity : AppCompatActivity() {
                     repo.repo.starsCount,
                     repo.repo.starsCount
                 )
-                itemView.repo_bookmark_image_view.isSelected = repo.isBookmarked
+                itemView.repo_bookmark_image_view.visibility =
+                    if (repo.isBookmarked) View.VISIBLE else View.INVISIBLE
             }
         }
     }
