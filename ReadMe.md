@@ -6,7 +6,7 @@ This is a small application to browse the repositories of Square Inc. on Github.
 - Supports both portrait and landscape
 - Landscape display the master detail layout
 ## Build and Run
-Open the project in AndroidStudio 3.5 then Gradle Sync and Run, it works fine on both emulator and device.
+Open the project in AndroidStudio then Gradle Sync and Run, it works fine on both emulator and device.
 ## Architecture & Frameworks
 Application built using MVVM architecture pattern where RxJava2 is used for asynchronous tasks and data binding,
 also RxRelays is used for bindings.

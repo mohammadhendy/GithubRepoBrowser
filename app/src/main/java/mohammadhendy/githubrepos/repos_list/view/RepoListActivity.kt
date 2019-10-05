@@ -28,10 +28,10 @@ import javax.inject.Inject
 
 /**
  * An activity representing a list of Repos. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of Repos, which when touched,
+ * has different presentations for portrait and landscape orientations. On
+ * portrait, the activity presents a list of Repos, which when touched,
  * lead to a [RepoDetailActivity] representing
- * Repo details. On tablets, the activity presents the list of Repos and
+ * Repo details. On landscape, the activity presents the list of Repos and
  * Repo details side-by-side using two vertical panes.
  */
 class RepoListActivity : AppCompatActivity() {
@@ -53,7 +53,7 @@ class RepoListActivity : AppCompatActivity() {
         var twoPane = false
         if (item_detail_container != null) {
             // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
+            // large-screen layouts (res/values-landscape).
             // If this view is present, then the
             // activity should be in two-pane mode.
             twoPane = true
@@ -218,7 +218,9 @@ class RepoListActivity : AppCompatActivity() {
         }
 
         fun reloadItem(item: BookmarkRepo) {
-            repoList.indexOf(item)?.let { notifyItemChanged(it) }
+            repoList.indexOf(item)
+                .takeIf { it > -1 }
+                ?.let { notifyItemChanged(it) }
         }
 
         fun updateSelectedItem(repoId: Int) {
@@ -226,15 +228,15 @@ class RepoListActivity : AppCompatActivity() {
                 selectedPosition = 0
                 notifyItemChanged(0)
             } else {
-                repoList.indexOfFirst {
-                    it.repo.id == repoId
-                }?.let { position ->
-                    if (selectedPosition != position) {
-                        selectedPosition?.let { notifyItemChanged(it) }
-                        selectedPosition = position
-                        notifyItemChanged(position)
+                repoList.indexOfFirst { it.repo.id == repoId }
+                    .takeIf { it > -1 }
+                    ?.let { position ->
+                        if (selectedPosition != position) {
+                            selectedPosition?.let { notifyItemChanged(it) }
+                            selectedPosition = position
+                            notifyItemChanged(position)
+                        }
                     }
-                }
             }
         }
 
