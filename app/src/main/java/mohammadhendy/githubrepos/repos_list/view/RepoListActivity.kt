@@ -89,21 +89,21 @@ class RepoListActivity : AppCompatActivity() {
     }
 
     private fun bindViewModel() {
-        disposables.add(viewModel.state
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                handleRepoState(it)
-            }, {
-                Log.e(LOG_TAG, "Error subscribing to repoListState", it)
-            })
-        )
-
         disposables.add(viewModel.nextRoute
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 handleNextRoute(it)
             }, {
                 Log.e(LOG_TAG, "Error subscribing to nextRoute", it)
+            })
+        )
+
+        disposables.add(viewModel.state
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                handleRepoState(it)
+            }, {
+                Log.e(LOG_TAG, "Error subscribing to repoListState", it)
             })
         )
 

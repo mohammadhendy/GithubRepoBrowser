@@ -71,7 +71,7 @@ class RepoListViewModelTest {
     }
 
     @Test
-    fun getState_SuccessAndSupportsTwoPane_NextRouteIsRefreshDetails() {
+    fun getState_SuccessAndSupportsTwoPane_EmitNextRouteIsRefreshDetails() {
         repoListViewModel = createViewModel(supportsTwoPane = true)
         val mockUtils = MockUtils()
         whenever(repository.repos).thenReturn(
@@ -83,6 +83,43 @@ class RepoListViewModelTest {
         testObserver.assertValue {
             it is RepoRoute.RefreshDetails && it.repoId == mockUtils.mockBookmarkRepos()[0].repo.id
         }
+    }
+
+    @Test
+    fun getState_SuccessAndSupportsTwoPane_DontEmitNextRoute() {
+        val mockUtils = MockUtils()
+        whenever(repository.repos).thenReturn(
+            Observable.just(ReposResult.Success(mockUtils.mockBookmarkReposMap()))
+        )
+        val testObserver = repoListViewModel.nextRoute.test()
+        repoListViewModel.state.test()
+        testObserver.assertNoErrors()
+        testObserver.assertNoValues()
+    }
+
+    @Test
+    fun getState_SuccessAndSupportsTwoPane_EmitSelectedRepoId() {
+        repoListViewModel = createViewModel(supportsTwoPane = true)
+        val mockUtils = MockUtils()
+        whenever(repository.repos).thenReturn(
+            Observable.just(ReposResult.Success(mockUtils.mockBookmarkReposMap()))
+        )
+        val testObserver = repoListViewModel.selectedRepoId.test()
+        repoListViewModel.state.test()
+        testObserver.assertNoErrors()
+        testObserver.assertValue(1)
+    }
+
+    @Test
+    fun getState_SuccessAndNotSupportsTwoPane_DontEmitSelectedRepoId() {
+        val mockUtils = MockUtils()
+        whenever(repository.repos).thenReturn(
+            Observable.just(ReposResult.Success(mockUtils.mockBookmarkReposMap()))
+        )
+        val testObserver = repoListViewModel.selectedRepoId.test()
+        repoListViewModel.state.test()
+        testObserver.assertNoErrors()
+        testObserver.assertNoValues()
     }
 
     @Test
@@ -104,6 +141,33 @@ class RepoListViewModelTest {
         testObserver.assertValue {
             it is RepoRoute.OpenDetails && it.repoId == 1
         }
+    }
+
+    @Test
+    fun selectedRepoId_SupportsTwoPane_EmitRepoId() {
+        repoListViewModel = createViewModel(supportsTwoPane = true)
+        val testObserver = repoListViewModel.selectedRepoId.test()
+        repoListViewModel.onRepoItemClicked(1)
+        testObserver.assertNoErrors()
+        testObserver.assertValue(1)
+    }
+
+    @Test
+    fun selectedRepoId_SupportsTwoPane_EmitDistinctRepoIds() {
+        repoListViewModel = createViewModel(supportsTwoPane = true)
+        val testObserver = repoListViewModel.selectedRepoId.test()
+        repoListViewModel.onRepoItemClicked(1)
+        repoListViewModel.onRepoItemClicked(1)
+        testObserver.assertNoErrors()
+        testObserver.assertValue(1)
+    }
+
+    @Test
+    fun selectedRepoId_NotSupportsTwoPane_EmitNothing() {
+        val testObserver = repoListViewModel.selectedRepoId.test()
+        repoListViewModel.onRepoItemClicked(1)
+        testObserver.assertNoErrors()
+        testObserver.assertNoValues()
     }
 
     private fun createViewModel(supportsTwoPane: Boolean = false) = RepoListViewModel(

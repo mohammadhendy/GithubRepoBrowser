@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/large_margin"
+    android:layout_marginTop="@dimen/small_margin"
     android:layout_marginStart="@dimen/small_margin"
     android:layout_marginEnd="@dimen/small_margin"
     tools:context=".repo_details.view.RepoDetailFragment">
