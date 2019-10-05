@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
 import mohammadhendy.githubrepos.TestRules
 import mohammadhendy.githubrepos.repository.IReposRepository
+import mohammadhendy.githubrepos.repository.ReposResult
 import mohammadhendy.githubrepos.service.MockUtils
 import org.junit.Before
 import org.junit.Test
@@ -27,7 +28,7 @@ class RepoListViewModelTest {
 
     @Test
     fun getState_FirstIsLoadingState() {
-        whenever(repository.repos).thenReturn(Observable.just(emptyList()))
+        whenever(repository.repos).thenReturn(Observable.just(ReposResult.Success(emptyMap())))
         val testObserver = repoListViewModel.state.test()
         testObserver.assertNoErrors()
         testObserver.assertValueAt(0, RepoListState.Loading)
@@ -46,7 +47,7 @@ class RepoListViewModelTest {
 
     @Test
     fun getState_NoRepos_ReturnEmptyState() {
-        whenever(repository.repos).thenReturn(Observable.just(emptyList()))
+        whenever(repository.repos).thenReturn(Observable.just(ReposResult.Success(emptyMap())))
         val testObserver = repoListViewModel.state.test()
         testObserver.assertNoErrors()
         testObserver.assertValueAt(0, RepoListState.Loading)
@@ -58,7 +59,9 @@ class RepoListViewModelTest {
     @Test
     fun getState_Success_ReturnDataState() {
         val mockUtils = MockUtils()
-        whenever(repository.repos).thenReturn(Observable.just(mockUtils.mockBookmarkRepos()))
+        whenever(repository.repos).thenReturn(
+            Observable.just(ReposResult.Success(mockUtils.mockBookmarkReposMap()))
+        )
         val testObserver = repoListViewModel.state.test()
         testObserver.assertNoErrors()
         testObserver.assertValueAt(0, RepoListState.Loading)
@@ -71,7 +74,9 @@ class RepoListViewModelTest {
     fun getState_SuccessAndSupportsTwoPane_NextRouteIsRefreshDetails() {
         repoListViewModel = createViewModel(supportsTwoPane = true)
         val mockUtils = MockUtils()
-        whenever(repository.repos).thenReturn(Observable.just(mockUtils.mockBookmarkRepos()))
+        whenever(repository.repos).thenReturn(
+            Observable.just(ReposResult.Success(mockUtils.mockBookmarkReposMap()))
+        )
         val testObserver = repoListViewModel.nextRoute.test()
         repoListViewModel.state.test()
         testObserver.assertNoErrors()

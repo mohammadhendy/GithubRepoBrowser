@@ -70,6 +70,7 @@ dependencies {
     // Android runner and rules support
     androidTestImplementation "androidx.test:runner:$project.TEST_RUNNER_VERSION"
     androidTestImplementation "androidx.test:rules:$project.TEST_RULES_VERSION"
+    androidTestImplementation "androidx.test.ext:junit:$project.TEST_RUNNER_VERSION"
     // Espresso support
     androidTestImplementation("androidx.test.espresso:espresso-core:$project.ESPRESSO_CORE_VERSION")
 }

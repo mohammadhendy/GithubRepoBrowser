@@ -1,6 +1,7 @@
 package mohammadhendy.githubrepos.service
 
 import mohammadhendy.githubrepos.api.model.Repo
+import mohammadhendy.githubrepos.database.model.Bookmark
 import mohammadhendy.githubrepos.service.model.BookmarkRepo
 
 class MockUtils {
@@ -21,4 +22,14 @@ class MockUtils {
             BookmarkRepo(repo = repoList[2], isBookmarked = true)
         )
     }
+
+    fun mockBookmarks() : List<Bookmark> {
+        return listOf(
+            Bookmark(1, false),
+            Bookmark(2, true),
+            Bookmark(3, true)
+        )
+    }
+
+    fun mockBookmarkReposMap() : Map<Int, BookmarkRepo> = mockBookmarkRepos().associateBy { it.repo.id }
 }

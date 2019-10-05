@@ -36,6 +36,7 @@ class RepoListViewModel(
                 }
             }
         }
+        .onErrorReturnItem(RepoListState.Empty(true))
         .startWith(RepoListState.Loading)
 
     override val nextRoute: Observable<RepoRoute> = nextRouteRelay.hide()

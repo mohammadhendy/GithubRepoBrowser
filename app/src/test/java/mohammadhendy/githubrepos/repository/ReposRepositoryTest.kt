@@ -35,7 +35,7 @@ class ReposRepositoryTest {
         val testObserver = reposRepository.repos.test()
         testObserver.assertNoErrors()
         testObserver.assertValue {
-            it.isEmpty()
+            it is ReposResult.Success && it.reposMap.isEmpty()
         }
     }
 
@@ -43,9 +43,9 @@ class ReposRepositoryTest {
     fun getRepos_Failed_ReturnError() {
         whenever(reposService.loadRepos(organisation)).thenReturn(Observable.error(Throwable("500")))
         val testObserver = reposRepository.repos.test()
-        testObserver.assertNoValues()
-        testObserver.assertError {
-            it.message == "500"
+        testObserver.assertNoErrors()
+        testObserver.assertValue {
+            it is ReposResult.Failure && it.error.message == "500"
         }
     }
 
@@ -57,9 +57,10 @@ class ReposRepositoryTest {
         testObserver.assertNoErrors()
         testObserver.assertValue {
             val repos = mockUtils.mockRepos()
-            it[0].repo == repos[0] && !it[0].isBookmarked &&
-                    it[1].repo == repos[1] && it[1].isBookmarked &&
-                    it[2].repo == repos[2] && it[2].isBookmarked
+            it is ReposResult.Success &&
+            it.reposMap[1]?.repo == repos[0] && it.reposMap[1]?.isBookmarked == false &&
+            it.reposMap[2]?.repo == repos[1] && it.reposMap[2]?.isBookmarked == true &&
+            it.reposMap[3]?.repo == repos[2] && it.reposMap[3]?.isBookmarked == true
         }
     }
 
@@ -79,15 +80,17 @@ class ReposRepositoryTest {
         testObserver.assertNoErrors()
         testObserver.assertValueAt(0) {
             val repos = mockUtils.mockRepos()
-            it[0].repo == repos[0] && !it[0].isBookmarked &&
-                    it[1].repo == repos[1] && it[1].isBookmarked &&
-                    it[2].repo == repos[2] && it[2].isBookmarked
+            it is ReposResult.Success &&
+                    it.reposMap[1]?.repo == repos[0] && it.reposMap[1]?.isBookmarked == false &&
+                    it.reposMap[2]?.repo == repos[1] && it.reposMap[2]?.isBookmarked == true &&
+                    it.reposMap[3]?.repo == repos[2] && it.reposMap[3]?.isBookmarked == true
         }
         testObserver.assertValueAt(1) {
             val repos = mockUtils.mockRepos()
-            it[0].repo == repos[0] && it[0].isBookmarked &&
-                    it[1].repo == repos[1] && !it[1].isBookmarked &&
-                    it[2].repo == repos[2] && !it[2].isBookmarked
+            it is ReposResult.Success &&
+                    it.reposMap[1]?.repo == repos[0] && it.reposMap[1]?.isBookmarked == true &&
+                    it.reposMap[2]?.repo == repos[1] && it.reposMap[2]?.isBookmarked == false &&
+                    it.reposMap[3]?.repo == repos[2] && it.reposMap[3]?.isBookmarked == false
         }
     }
 

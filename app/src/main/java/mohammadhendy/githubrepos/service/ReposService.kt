@@ -21,11 +21,16 @@ class ReposService(
     override fun loadRepos(organisation: String): Observable<List<BookmarkRepo>> = githubApi
         .getRepos(organisation)
         .flatMap { repos->
-            Single.just(repos).zipWith(bookmarkDao.isBookmarked(repos.map { it.id }.toIntArray()),
-                BiFunction { reposList: List<Repo>, bookmarksList: List<Bookmark> ->
-                    mapToBookmarkRepo(reposList, bookmarksList)
-                }
-            )
+            if (repos.isEmpty()) {
+                Single.just(emptyList())
+            } else {
+                Single.just(repos)
+                    .zipWith(bookmarkDao.isBookmarked(repos.map { it.id }.toIntArray()),
+                        BiFunction { reposList: List<Repo>, bookmarksList: List<Bookmark> ->
+                            mapToBookmarkRepo(reposList, bookmarksList)
+                        }
+                    )
+            }
         }
         .toObservable()
         .subscribeOn(Schedulers.io())
